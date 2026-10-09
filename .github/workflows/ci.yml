@@ -15,7 +15,11 @@ env:
 
 jobs:
   mascot-pipeline:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
       - name: Check out repository
@@ -142,6 +146,13 @@ jobs:
         env:
           SPARKLE_PUBLIC_ED_KEY: ${{ vars.SPARKLE_PUBLIC_ED_KEY || 'iojj3XQJ8ZX9UtstPLpdcspnCb8dlBIb83SIAbQPb1w=' }}
         run: npm run package:mac
+      - name: Verify bundled macOS mascot resources
+        run: |
+          app="$(find release -type d -name 'CanvasTTY.app' -print -quit)"
+          test -n "$app"
+          test -f "$app/Contents/Resources/mascot-pipeline/SKILL.md"
+          test -f "$app/Contents/Resources/mascot-pipeline/scripts/prepare_input.py"
+          test -f "$app/Contents/Resources/mascot-pipeline/templates/plugin/player.js"
       - name: Smoke-test packaged macOS CLI resolution
         run: npm run smoke:cli-resolution:mac
       - name: Verify hidden terminal rendering and state restoration on macOS

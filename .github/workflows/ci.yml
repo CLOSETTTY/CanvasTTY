@@ -14,6 +14,21 @@ env:
   CANVASTTY_REQUIRE_NATIVE_HELPERS: "1"
 
 jobs:
+  mascot-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Install mascot pipeline dependencies in a virtual environment
+        run: |
+          python3 -m venv .mascot-venv
+          .mascot-venv/bin/python -m pip install -r assets/mascot-pipeline/requirements.txt
+      - name: Verify mascot intake, build, review, and delivery contracts
+        run: .mascot-venv/bin/python -B assets/mascot-pipeline/tests/smoke_pipeline.py
+      - name: Verify placement against bundled accepted artwork
+        run: .mascot-venv/bin/python -B assets/mascot-pipeline/tests/placement_regression.py
+
   verify:
     runs-on: ubuntu-latest
     steps:

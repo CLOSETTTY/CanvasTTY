@@ -64,6 +64,17 @@ jobs:
         run: npm run typecheck
       - name: Build production bundles
         run: npm run build
+      - name: Build Linux installers and verify bundled mascot resources
+        run: |
+          npm run package:linux
+          test -f release/linux-unpacked/resources/mascot-pipeline/SKILL.md
+          test -f release/linux-unpacked/resources/mascot-pipeline/scripts/prepare_input.py
+          test -f release/linux-unpacked/resources/mascot-pipeline/templates/plugin/player.js
+      - name: Install AppImage runtime dependency
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libfuse2t64
+      - name: Smoke-test packaged Linux AppImage
+        timeout-minutes: 2
+        run: xvfb-run -a npm run smoke:appimage
       - name: Verify hidden terminal rendering and state restoration
         timeout-minutes: 2
         run: xvfb-run -a npm run smoke:terminal-hidden

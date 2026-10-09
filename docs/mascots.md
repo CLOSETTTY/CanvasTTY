@@ -85,4 +85,4 @@ python -B assets/mascot-pipeline/tests/smoke_pipeline.py
 python -B assets/mascot-pipeline/tests/placement_regression.py
 ```
 
-CI runs the Python pipeline checks separately from the application's existing checks. Synthetic tests verify contracts and source-to-atlas placement, not generative quality. Test the complete live creation and card interaction flow on each supported platform before release; a Windows preview run does not establish macOS or Linux UI acceptance.
+CI runs the Python pipeline checks separately from the application's existing checks. The Ubuntu application job also builds Linux installers, verifies the bundled mascot workflow and player, and smoke-tests the packaged AppImage. Synthetic tests verify contracts and source-to-atlas placement, not generative quality. Test the complete live creation and card interaction flow on each supported platform before release; a Windows preview run does not establish macOS or Linux UI acceptance.
